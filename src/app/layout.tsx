@@ -9,21 +9,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className="max-w-md mx-auto">
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-between">
-          <div className="w-full max-w-md min-h-screen text-black justify-center flex flex-col relative">
-            <div className="flex  absolute top-0 p-1 w-full bg-black/25 justify-center text-xs">
-              Designed & Developed by{"  "}
-              <span className=" pl-1 italic text-blue-500"> Zen Bachtiar</span>
-            </div>
-            {children}
-            <BottomNavigation />
+      <body className="bg-white text-black max-w-md mx-auto">
+        <div className="min-h-screen flex flex-col relative">
+          <div className="absolute top-0 p-1 w-full text-xs text-center z-10 ">
+            Designed & Developed by{" "}
+            <span className="pl-1 italic text-blue-500">Zen Bachtiar</span>
           </div>
+          {children}
+          <BottomNavigation />
         </div>
       </body>
     </html>
