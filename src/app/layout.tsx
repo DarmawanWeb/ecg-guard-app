@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.scss";
-
 import BottomNavigation from "@/components/layout/bottom-nav";
 
 export const metadata: Metadata = {
