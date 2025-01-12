@@ -1,4 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+    <img src="docs/img/logo_cover.png" height="150px" />
+</p>
+
+## Introduction
+
+ECG Guard App is a Progressive Web App (PWA) for real-time ECG monitoring built with Next.js, WebSockets, and NextAuth for user authentication. This monolithic application integrates with Supabase for database management and user storage. The app provides users with a seamless experience for tracking and visualizing ECG data on both web and mobile platforms.
+
+## Features
+
+- Real-time ECG monitoring
+- User authentication with NextAuth
+- Data storage and management with Supabase
+- Works on both web and mobile platforms
+- Progressive Web App (PWA) for offline functionality
+
+## Technologies Used
+
+- **Next.js**: A React framework for building web applications.
+- **WebSockets**: For real-time communication between the client and server.
+- **NextAuth**: A flexible and secure authentication solution for Next.js apps.
+- **Supabase**: An open-source backend-as-a-service platform for database management and user storage.
+- **PWA (Progressive Web App)**: Allows the app to work offline and be installed on mobile devices.
 
 ## Getting Started
 
@@ -15,22 +37,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
