@@ -15,7 +15,7 @@ const HomePage = () => {
   };
 
   const signUpHandler = (roleId: number) => {
-    navigateTo(`/signup?id=${roleId}`);
+    navigateTo(`/register?id=${roleId}`);
   };
 
   const loginRedirectHandler = () => {
