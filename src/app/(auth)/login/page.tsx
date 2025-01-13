@@ -122,7 +122,7 @@ export default function LoginPage() {
         </Button>
 
         <div className="flex gap-2 pt-2 text-sm">
-          <h3>Doesn't have an account?</h3>
+          <h3>{`Doesn't have an account?`}</h3>
           <Link
             href="/signup?id=1"
             className="underline underline-offset-4 hover:text-primary"

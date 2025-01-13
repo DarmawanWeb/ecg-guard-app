@@ -6,16 +6,14 @@ import bcrypt from "bcryptjs";
 
 declare module "next-auth" {
   interface Session {
-    user: {
       id: string;
       email: string;
       role: string;
       name?: string | null;
-    };
   }
 }
 
-export const handler = NextAuth({
+const authHandler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -63,7 +61,7 @@ export const handler = NextAuth({
 
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string;
+        session.id = token.id as string;
         session.user.email = token.email as string;
         session.user.role = token.role as string;
         session.user.name = token.name as string; 
@@ -71,7 +69,7 @@ export const handler = NextAuth({
       return session;
     },
   },
-  adapter: PrismaAdapter(prisma), 
+  adapter: PrismaAdapter(prisma),
 });
 
-export { handler as GET, handler as POST };
+export { authHandler as GET, authHandler as POST };
