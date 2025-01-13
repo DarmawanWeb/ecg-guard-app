@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn, getSession } from "next-auth/react";
 
 const formLoginSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
@@ -26,7 +27,6 @@ const formLoginSchema = z.object({
 type UserFormValue = z.infer<typeof formLoginSchema>;
 
 export default function LoginPage() {
-  // const { login } = auth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -42,18 +42,35 @@ export default function LoginPage() {
 
   const onSubmit = async (data: UserFormValue) => {
     setLoading(true);
-    // try {
-    //   // const role = await login(data);
-    //   if (role === "user") {
-    //     router.push("/user");
-    //   } else if (role === "admin") {
-    //     router.push("/admin");
-    //   }
-    // } catch (error) {
-    //   console.error("Login error: ", error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
+      if (response?.error) {
+        alert("Invalid email or password");
+      } else if (response?.ok) {
+        const session = await getSession();
+        const userRole = session?.user?.role;
+
+        if (userRole === "USER") {
+          router.push("/user");
+        } else if (userRole === "ADMIN") {
+          router.push("/admin");
+        } else {
+          alert("Role not assigned correctly.");
+        }
+      } else {
+        alert("Something went wrong, please try again.");
+      }
+    } catch (error) {
+      console.error("Login error: ", error);
+      alert("Something went wrong, please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

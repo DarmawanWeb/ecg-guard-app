@@ -15,10 +15,11 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-// import { auth } from "@/api/auth";
+import axios from "axios";
 
 const formSchema = z
   .object({
+    name: z.string().min(1, { message: "Name is required" }),
     email: z.string().email({ message: "Enter a valid email address" }),
     password: z
       .string()
@@ -26,7 +27,7 @@ const formSchema = z
     password_confirmation: z
       .string()
       .min(8, { message: "Password must be at least 8 characters" }),
-    role: z.enum(["user", "admin"]),
+    role: z.enum(["USER", "ADMIN"]),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords must match",
@@ -36,20 +37,20 @@ const formSchema = z
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
-  const [role, setRole] = useState<"user" | "admin">("user");
+  const [role, setRole] = useState<"USER" | "ADMIN">("USER");
   const searchParams = useSearchParams();
-  //   const { register } = auth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const roleId = searchParams.get("id") as string;
+    const roleId = searchParams.get("id");
     if (roleId) {
-      setRole(roleId === "1" ? "user" : "admin");
+      setRole(roleId === "1" ? "USER" : "ADMIN");
     }
   }, [searchParams]);
 
   const defaultValues: UserFormValue = {
+    name: "",
     email: "",
     password: "",
     password_confirmation: "",
@@ -63,16 +64,23 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: UserFormValue) => {
     const dataNew = {
+      name: data.name,
       email: data.email,
       password: data.password,
       password_confirmation: data.password_confirmation,
       role: role,
     };
+
     try {
       setLoading(true);
-      //   await register(dataNew);
-      router.push("/login");
+      const response = await axios.post("/api/auth/register", dataNew);
+      if (response.status === 201) {
+        router.push("/login");
+      } else {
+        throw new Error("Error registering user");
+      }
     } catch (error) {
+      console.error("Error registering user:", error);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -85,6 +93,25 @@ export default function RegisterPage() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-3 relative z-10"
       >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Enter your name..."
+                  disabled={loading}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="email"
@@ -143,7 +170,7 @@ export default function RegisterPage() {
         />
 
         <Button disabled={loading} className="ml-auto w-full" type="submit">
-          {loading ? "Registering..." : `Register ${role}`}
+          {loading ? "Registering..." : `Register as ${role}`}
         </Button>
 
         <div className="flex gap-2 pt-2 text-sm">

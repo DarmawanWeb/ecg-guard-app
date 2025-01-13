@@ -4,6 +4,17 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      role: string;
+      name?: string | null;
+    };
+  }
+}
+
 export const handler = NextAuth({
   providers: [
     CredentialsProvider({
@@ -13,19 +24,23 @@ export const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials!.email },
+          where: { email: credentials.email },
         });
 
-        if (user && bcrypt.compareSync(credentials!.password, user.password)) {
+        if (user && bcrypt.compareSync(credentials.password, user.password)) {
           return {
             id: user.id.toString(),
             email: user.email,
             role: user.role,
+            name: user.name || undefined,
           };
         }
-
-        return null;
+        throw new Error("Invalid email or password");
       },
     }),
   ],
@@ -38,13 +53,20 @@ export const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role; 
+        token.id = user.id;
+        token.email = user.email;
+        token.role = user.role;
+        token.name = user.name;
       }
       return token;
     },
+
     async session({ session, token }) {
       if (token) {
-        session.user.role = token.role; 
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.role = token.role as string;
+        session.user.name = token.name as string; 
       }
       return session;
     },
